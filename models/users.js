@@ -1,30 +1,38 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    firstName: {
-        type: String
-    },
-    lastName: {
-        type: String
-    },
-    password: {
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+  },
+  friendsList: [
+    {
+      friendId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      friendName: {
         type: String,
-        required: true
+        default: "",
+      },
     },
-    email: {
-        type: String
-    },
-    friendsList: [{
-        friendId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        },
-        friendName: {
-            type: String,
-            default: ""
-        }
-    }]
+  ],
+  lastUpdate: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
-module.exports = mongoose.model("Users", userSchema)
+userSchema.index({ firstName: "text", lastName: "text", email: "text" });
+var model = mongoose.model("Users", userSchema);
+model.createIndexes();
+module.exports = model;
