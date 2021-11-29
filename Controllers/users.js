@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config({ path: __dirname + "./../config/.env" });
+const bruteForces = require('../Middleware/rateLimiterMiddleware')
 // Load User model
 const User = require("../models/users");
 // @route POST api/users/register
@@ -38,7 +39,7 @@ router.post("/register", (req, res) => {
 // @route POST api/users/login
 // @desc Login user and return JWT token
 // @access Public
-router.post("/login", (req, res) => {
+router.post("/login", bruteForces.prevent, (req, res) => {
   // Form validation
 
   const email = req.body.email;
